@@ -1,0 +1,32 @@
+Sub toVcf()
+
+Dim sh As Worksheet
+Dim rw As Range
+Dim keep As Integer
+
+
+outputFile = FreeFile
+Open "/Users/broder/tmp/vcf_output.vcf" For Output As #outputFile
+Print #outputFile, "#CHROM" & vbTab & "POS" & vbTab & "ID" & vbTab & "REF" & vbTab & "ALT" & vbTab & "QUAL" & vbTab & "FILTER" & vbTab & "INFO"
+
+Set sh = ActiveSheet
+start = 3
+For Each rw In sh.Rows
+  If sh.Cells(rw.Row, 1).Value = "1" Then
+    chromTmp = sh.Cells(rw.Row, start).Value
+    chrom = Replace(chromTmp, "chr", "")
+    pos = sh.Cells(rw.Row, start + 1).Value
+    Id = sh.Cells(rw.Row, start + 16).Value
+    ref = sh.Cells(rw.Row, start + 2).Value
+    alt = sh.Cells(rw.Row, start + 3).Value
+    qual = sh.Cells(rw.Row, start + 4).Value
+    filterVal = sh.Cells(rw.Row, start + 5).Value
+    info = "."
+    Print #outputFile, chrom & vbTab & pos & vbTab & Id & vbTab & ref & vbTab & alt & vbTab & qual & vbTab & filterVal & vbTab & info
+  ElseIf sh.Cells(rw.Row, start).Value = "" Then
+    Exit For
+  End If
+
+Next rw
+Close #outputFile
+End Sub
